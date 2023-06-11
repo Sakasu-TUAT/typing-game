@@ -21,8 +21,8 @@
         <div class="mb-20">{{ currentQuestionCounts }}/{{ totalQuestionNum }}</div>
         <button class="resetButton mb-20" @click="gameReset">RESET</button>
       </div>
-      <input type="text" v-model="message" placeholder="Enter a message" />
-      <button @click="sendMessage">Send</button>
+      <!-- <input type="text" v-model="message" placeholder="Enter a message" />
+      <button @click="sendMessage">Send</button> -->
     </div>
   </template>
   
@@ -155,4 +155,97 @@ export default {
 };
 </script>
 
-     
+<style>
+*{
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+body{
+    font-size: 32px;
+}
+
+/* ボタンのマージン確保のためによく使われる方法らしい */
+.mb-20{
+    margin-bottom: 20px;
+}
+
+.container{
+    width: 400px;
+    /* ゲームが全体中央に寄る */
+    margin: 0 auto;
+    text-align: center;
+}
+
+.title{
+    position: relative;
+    font-size: 48px;
+}
+
+.marker{
+    width: 100%;
+    height: 35%;
+    background-color: rgb(7, 195, 233);
+    /* absolute: 親要素であるtitleの基準位置に対して絶対的に位置を指定 */
+    position: absolute;
+    bottom: 5%;
+    z-index: -1;
+}
+
+.startButton{
+    background-color: #333;
+    color: #fff;
+    padding: 4px 60px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+.startButton:hover{
+    opacity: 0.7;
+    background-color: #a31010;
+}
+.resetButton{
+    background-color: #333;
+    color: #fff;
+    padding: 4px 60px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+.resetButton:hover{
+    opacity: 0.7;
+    background-color: #0d1c69;
+}
+
+.question{
+    color: rgb(103, 86, 86);
+    font-weight: bold;
+}
+.clear{
+    color: #03a9f4;
+    font-size: 45px;
+    font-weight: bold;
+    /* color: yellow; */
+    /* -webkit-text-stroke: 1.5px rgb(0, 0, 0); */
+}
+.typeForm{
+    text-align: center;
+    outline: none;
+    border: none;
+}
+.typeFormWrapper{
+    border-bottom: 1px solid #333;
+}
+.gaugeWrapper{
+    border: 1px solid #333;
+    height: 12px;
+}
+.gauge{
+    height: 12px;
+    /* 0.3秒かけて変化する */
+    transition: all .3s ease; 
+}
+</style>
