@@ -61,7 +61,7 @@ export default {
   },
   computed: {
     styleObject() {
-        const width = this.currentQuestionCounts * (100 / this.totalQuestionNum) + "%";
+      const width = this.currentQuestionCounts * (100 / this.totalQuestionNum) + "%";
       const color = this.currentQuestionCounts === this.totalQuestionNum ? "#03a9f4" : "orange";
       return {
         width: width,
@@ -95,6 +95,8 @@ export default {
     },
     gameClear() {
       this.updateState(this.gameState.CLEARED);
+      this.message = this.formatTime(this.elapsedTime)
+      this.sendMessage();
       clearInterval(this.timer);
     },
     config() {
@@ -106,7 +108,6 @@ export default {
     },
     gameReset() {
       this.config();
-      this.sendMessage();
       clearInterval(this.timer);
     },
     startTimer() {
