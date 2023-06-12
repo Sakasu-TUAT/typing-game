@@ -63,8 +63,9 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
 
         // 環境変数からフロントエンドのURLを取得する
-        let frontend_url = std::env::var("FRONTEND_URL").unwrap_or_else(|_| "*".to_string());
+        // let frontend_url = std::env::var("FRONTEND_URL").unwrap_or_else(|_| "*".to_string());
         // let frontend_url = "http://localhost:8080";
+        let frontend_url = "https://typinggame-ufh6.onrender.com";
         // CORSの設定を作成する
         let cors = Cors::default()
         .allowed_origin(&frontend_url) // フロントエンドのURLを許可する
