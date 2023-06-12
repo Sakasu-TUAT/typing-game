@@ -78,7 +78,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(cors)
             .service(echo_message)
     })
-    .bind("127.0.0.1:8000")?
+    .bind(format!("{}:{}", std::env::var("HOST").unwrap_or_else(|_| "0.0.0.0".to_string()), std::env::var("PORT").unwrap_or_else(|_| "8000".to_string())))?
     .run()
     .await
 }
