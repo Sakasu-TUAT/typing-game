@@ -35,11 +35,12 @@ export default {
       startFlg: "",
       currentQuestion: "",
       questions: [
-        "apple",
-        "orange",
-        "banana",
-        "grape",
-        "peach"
+        "a",
+        "a",
+        // "orange",
+        // "banana",
+        // "grape",
+        // "peach"
       ],
       currentQuestions: [],
       typeBox: "",
