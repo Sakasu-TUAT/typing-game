@@ -61,12 +61,17 @@ async fn show_ranking() -> Result<(), Error> {
 async fn main() -> std::io::Result<()> {
     // HTTPサーバーを起動する
     HttpServer::new(|| {
+
+        // 環境変数からフロントエンドのURLを取得する
+        let frontend_url = std::env::var("FRONTEND_URL").unwrap_or_else(|_| "*".to_string());
+        // let frontend_url = "http://localhost:8080";
         // CORSの設定を作成する
         let cors = Cors::default()
-            .allowed_origin("http://localhost:8080") // フロントエンドのオリジンを許可する
-            .allowed_methods(vec!["POST"]) // POSTメソッドを許可する
-            .allowed_header("content-type") // content-typeヘッダーを許可する
-            .max_age(3600); // プリフライトリクエストの結果のキャッシュ時間を設定する
+        .allowed_origin(&frontend_url) // フロントエンドのURLを許可する
+        .allowed_methods(vec!["GET", "POST"]) // GETとPOSTメソッドを許可する
+        .allowed_header("content-type") // content-typeヘッダーを許可する
+        .supports_credentials() // クレデンシャルをサポートする
+        .max_age(3600); // プリフライトリクエストの結果のキャッシュ時間を設定する
         // CORSのミドルウェアとハンドラーを登録する
         App::new()
             .wrap(cors)
