@@ -73,8 +73,12 @@ export default {
   methods: {
     async sendMessage() {
       try {
+        // 環境変数からバックエンドのURLを取得する
+        // const backendUrl = process.env.BACKEND_URL;
+        const backendUrl = "http://localhost:8000"; //ローカルの場合
+        // const backendUrl = "https://typinggame-9sgt.onrender.com/";
         // バックエンドのURLにメッセージをPOSTする
-        const response = await axios.post("http://localhost:8000/message", {
+        const response = await axios.post(`${backendUrl}/message`, {
           message: this.message,
         });
         // レスポンスをコンソールに表示する

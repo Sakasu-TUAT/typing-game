@@ -61,18 +61,24 @@ async fn show_ranking() -> Result<(), Error> {
 async fn main() -> std::io::Result<()> {
     // HTTPサーバーを起動する
     HttpServer::new(|| {
+
+        // 環境変数からフロントエンドのURLを取得する
+        // let frontend_url = std::env::var("FRONTEND_URL").unwrap_or_else(|_| "*".to_string());
+        // let frontend_url = "http://localhost:8080";
+        let frontend_url = "https://typinggame-ufh6.onrender.com";
         // CORSの設定を作成する
         let cors = Cors::default()
-            .allowed_origin("http://localhost:8080") // フロントエンドのオリジンを許可する
-            .allowed_methods(vec!["POST"]) // POSTメソッドを許可する
-            .allowed_header("content-type") // content-typeヘッダーを許可する
-            .max_age(3600); // プリフライトリクエストの結果のキャッシュ時間を設定する
+        .allowed_origin(&frontend_url) // フロントエンドのURLを許可する
+        .allowed_methods(vec!["GET", "POST"]) // GETとPOSTメソッドを許可する
+        .allowed_header("content-type") // content-typeヘッダーを許可する
+        .supports_credentials() // クレデンシャルをサポートする
+        .max_age(3600); // プリフライトリクエストの結果のキャッシュ時間を設定する
         // CORSのミドルウェアとハンドラーを登録する
         App::new()
             .wrap(cors)
             .service(echo_message)
     })
-    .bind("127.0.0.1:8000")?
+    .bind(format!("{}:{}", std::env::var("HOST").unwrap_or_else(|_| "0.0.0.0".to_string()), std::env::var("PORT").unwrap_or_else(|_| "8000".to_string())))?
     .run()
     .await
 }
