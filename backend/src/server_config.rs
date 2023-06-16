@@ -2,9 +2,14 @@ use actix_cors::Cors;
 use std::env;
 
 pub fn get_server_address() -> String {
+
+    // let host = env::var("HOST").unwrap_or_else(|_| "localhost".to_string());
+    // let port = env::var("PORT").unwrap_or_else(|_| "8000".to_string());
+    // println!("{}: {}", host, port);
+    
     format!(
         "{}:{}",
-        env::var("HOST").unwrap_or_else(|_| "0.0.0.0".to_string()),
+        env::var("HOST").unwrap_or_else(|_| "localhost".to_string()),
         env::var("PORT").unwrap_or_else(|_| "8000".to_string())
     )
 }
