@@ -12,7 +12,9 @@ pub struct AppState {
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
 
-    let database_url = std::env::var("RENDER_POSTGRES_INTERNAL_DBURL").expect("RENDER_POSTGRES_INTERNAL_DBURL must be set"); 
+    let database_url = std::env::var("RENDER_POSTGRES_INTERNAL_DBURL").expect("RENDER_POSTGRES_INTERNAL_DBURL must be set");
+    // let database_url = std::env::var("RENDER_POSTGRES_EXTERNAL_DBURL").expect("RENDER_POSTGRES_EXTERNAL_DBURL must be set");
+ 
 
     let pool = PgPoolOptions::new()
         .max_connections(5)
@@ -20,15 +22,16 @@ async fn main() -> std::io::Result<()> {
         .await
         .expect("Error building a connection pool");
 
+    // let frontend_url = "http://localhost:8080";
     let frontend_url = std::env::var("FRONTEND_URL").unwrap_or_else(|_| "*".to_string());
 
     println!("database_url: {}", database_url);
     println!("frontend_url: {}", frontend_url);
 
     HttpServer::new(move || {
-
         let cors = services::configure_cors(&frontend_url);
-        App::new()
+
+      App::new()
             .wrap(cors)
             .app_data(Data::new(AppState { db: pool.clone() }))
             .configure(services::init)
@@ -36,9 +39,8 @@ async fn main() -> std::io::Result<()> {
             .service(services::insert_data)
             .service(services::get_score_rank)
             .service(services::delete_db)
-
     })
-   // Render.com (Heroku) automatically assigns "PORT" !!!
+    //Render.com(Heroku)が自動的に割り当ててくれる！！！
     .bind(format!("0.0.0.0:{}", std::env::var("PORT").unwrap_or_else(|_| "8000".to_string())))?
     .run()
     .await

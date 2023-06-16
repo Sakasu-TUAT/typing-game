@@ -4,14 +4,14 @@
         <h1>たいぴんぐ.</h1>
         <div class="marker"></div>
       </div>
-      <!-- Assigning multiple classes to a button -->
+      <!-- ボタンにクラスを複数割り当てている -->
       <button v-if="currentGameState == gameState.READY" class="startButton mb-20" @click="gameStart">START</button>
       <div v-if="currentGameState != gameState.READY">
         <div class="question mb-20">{{ currentQuestion }}</div>
         <div v-if="currentQuestionCounts == totalQuestionNum" class="clear">Clear!</div>
         <div class="typeFormWrapper mb-20">
-      <!-- The typed characters will be linked to typeBox -->
-      <input id="typeForm" v-model="typeBox" type="text" class="typeForm" />
+          <!-- タイプした文字がtypeBoxと連動するようになる -->
+          <input id="typeForm" v-model="typeBox" type="text" class="typeForm" />
         </div>
         <div class="gaugeWrapper mb-20">
           <div :style="styleObject" class="gauge"></div>
@@ -62,7 +62,9 @@ export default {
       score: 0,
       rank: null,
       error: null,
-      backendUrl: process.env.BACKEND_URL,
+      backendUrl: "https://typinggame-9sgt.onrender.com",
+      // backendUrl: process.env.BACKEND_URL,
+      // backendUrl: "http://localhost:8000",
       username: "Player",
     };
   },
@@ -80,7 +82,7 @@ export default {
     async postScore() {
       console.log("[Post URL]: " + `${this.backendUrl}/users`);
       try {
-       //!@note The name of the message must be spelled the same as on the backend side.
+        //!@note メッセージの名前はbackend側と同じ表記にしなければならない
         const response = await axios.post(`${this.backendUrl}/users`, {
           username: this.username,
           score: this.score,
@@ -188,14 +190,14 @@ body{
     font-size: 32px;
 }
 
-/* This is a commonly used method to secure margins for buttons. */
+/* ボタンのマージン確保のためによく使われる方法らしい */
 .mb-20{
     margin-bottom: 20px;
 }
 
 .container{
     width: 400px;
-    /* The game is centered in the middle of the screen. */
+    /* ゲームが全体中央に寄る */
     margin: 0 auto;
     text-align: center;
 }
@@ -209,7 +211,7 @@ body{
     width: 100%;
     height: 35%;
     background-color: rgb(7, 195, 233);
-   /* absolute: specifies the position absolutely to the reference position of the parent element, which is the title. */
+    /* absolute: 親要素であるtitleの基準位置に対して絶対的に位置を指定 */
     position: absolute;
     bottom: 5%;
     z-index: -1;
@@ -267,7 +269,7 @@ body{
 }
 .gauge{
     height: 12px;
-    /* Changes over 0.3 seconds. */
+    /* 0.3秒かけて変化する */
     transition: all .3s ease; 
 }
 </style>
