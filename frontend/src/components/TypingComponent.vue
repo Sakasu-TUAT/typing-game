@@ -36,14 +36,15 @@ export default {
       startFlg: "",
       currentQuestion: "",
       questions: [
-        "hello",
-        "apple",
-        "orange",
-        "banana",
-        "grape",
-        "peach",
-        "kyouhamoutukareta",
-        "oyasuminasai"
+        "a",
+        // "hello",
+        // "apple",
+        // "orange",
+        // "banana",
+        // "grape",
+        // "peach",
+        // "kyouhamoutukareta",
+        // "oyasuminasai"
       ],
       currentQuestions: [],
       typeBox: "",
@@ -63,6 +64,7 @@ export default {
       rank: null,
       error: null,
       backendUrl: process.env.BACKEND_URL,
+      // backendUrl: "http://localhost:8000",
       username: "Player",
     };
   },

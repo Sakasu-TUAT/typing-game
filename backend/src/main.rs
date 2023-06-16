@@ -23,7 +23,6 @@ async fn main() -> std::io::Result<()> {
     // let frontend_url = "http://localhost:8080";
     let frontend_url = std::env::var("FRONTEND_URL").unwrap_or_else(|_| "*".to_string());
 
-
     HttpServer::new(move || {
         let cors = services::configure_cors(&frontend_url);
 
