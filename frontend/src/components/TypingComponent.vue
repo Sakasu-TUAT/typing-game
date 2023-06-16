@@ -19,10 +19,11 @@
   
         <p>Time: {{ formatTime(elapsedTime) }}</p>
         <div class="mb-20">{{ currentQuestionCounts }}/{{ totalQuestionNum }}</div>
+        <div v-if="currentGameState==gameState.CLEARED">
+          <p> {{username}}'s rank is {{ rank }} th</p>
+        </div>
         <button class="resetButton mb-20" @click="gameReset">RESET</button>
       </div>
-      <!-- <input type="text" v-model="message" placeholder="Enter a message" />
-      <button @click="sendMessage">Send</button> -->
     </div>
   </template>
   
@@ -35,12 +36,14 @@ export default {
       startFlg: "",
       currentQuestion: "",
       questions: [
-        "a",
-        "a",
-        // "orange",
-        // "banana",
-        // "grape",
-        // "peach"
+        "hello",
+        "apple",
+        "orange",
+        "banana",
+        "grape",
+        "peach",
+        "kyouhamoutukareta",
+        "oyasuminasai"
       ],
       currentQuestions: [],
       typeBox: "",
@@ -56,8 +59,13 @@ export default {
         CLEARED: "cleared",
       },
       currentGameState: null,
-      messages: [],
-      message: '',
+      score: 0,
+      rank: null,
+      error: null,
+      backendUrl: "https://typinggame-9sgt.onrender.com",
+      // backendUrl: process.env.BACKEND_URL,
+      // backendUrl: "http://localhost:8000",
+      username: "Player",
     };
   },
   computed: {
@@ -71,22 +79,32 @@ export default {
     },
   },
   methods: {
-    async sendMessage() {
+    async postScore() {
+      console.log("[Post URL]: " + `${this.backendUrl}/users`);
       try {
-        // 環境変数からバックエンドのURLを取得する
-        // const backendUrl = process.env.BACKEND_URL;
-        // const backendUrl = "http://localhost:8000"; //ローカルの場合
-        const backendUrl = "https://typinggame-9sgt.onrender.com/";
-        // バックエンドのURLにメッセージをPOSTする
-        const response = await axios.post(`${backendUrl}/message`, {
-          message: this.message,
+        //!@note メッセージの名前はbackend側と同じ表記にしなければならない
+        const response = await axios.post(`${this.backendUrl}/users`, {
+          username: this.username,
+          score: this.score,
+          created_at: new Date(),
         });
-        // レスポンスをコンソールに表示する
         console.log(response.data);
       } catch (error) {
-        // エラーが発生した場合はコンソールに表示する
         console.error(error);
       }
+    },
+    async fetchScoreRank() {
+      console.log("[Fetch URL]: " + `${this.backendUrl}/score_rank/${this.score}`);
+      try {
+        const response = await axios.get(`${this.backendUrl}/score_rank/${this.score}`);
+        this.rank = response.data;
+        this.error = null;
+      } catch (error) {
+        this.rank = null;
+        this.error = 'Failed to fetch score rank';
+        console.error(error);
+      }
+      console.log("rank is " + this.rank);
     },
     updateState(state) {
       this.currentGameState = state;
@@ -100,8 +118,9 @@ export default {
     },
     gameClear() {
       this.updateState(this.gameState.CLEARED);
-      this.message = this.formatTime(this.elapsedTime)
-      this.sendMessage();
+      this.score = this.elapsedTime;
+      this.postScore();
+      this.fetchScoreRank();
       clearInterval(this.timer);
     },
     config() {
