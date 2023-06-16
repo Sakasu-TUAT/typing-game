@@ -40,7 +40,7 @@ async fn main() -> std::io::Result<()> {
             .service(services::get_score_rank)
             .service(services::delete_db)
     })
-    .bind("127.0.0.1:8080")?
+    .bind(("localhost", 8000))?
     .run()
     .await
 }

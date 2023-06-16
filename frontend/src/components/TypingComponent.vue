@@ -63,9 +63,9 @@ export default {
       score: 0,
       rank: null,
       error: null,
-      backendUrl: "https://typinggame-9sgt.onrender.com",
+      // backendUrl: "https://typinggame-9sgt.onrender.com",
       // backendUrl: process.env.BACKEND_URL,
-      // backendUrl: "http://localhost:8000",
+      backendUrl: "http://localhost:8000",
       username: "Player",
     };
   },
