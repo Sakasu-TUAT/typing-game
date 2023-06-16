@@ -10,7 +10,7 @@ use sqlx::{self, FromRow};
 use crate::AppState;
 
 #[derive(Serialize, Deserialize, FromRow)]
-struct Player {
+pub struct Player {
     username: String,
     score: f64,
     created_at: String,
