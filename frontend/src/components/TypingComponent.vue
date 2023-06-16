@@ -42,7 +42,7 @@ export default {
         "banana",
         "grape",
         "peach",
-        "kyouhamoutukareta",
+        "otukaresamadeshita",
         "oyasuminasai"
       ],
       currentQuestions: [],
@@ -62,7 +62,7 @@ export default {
       score: 0,
       rank: null,
       error: null,
-      backendUrl: process.env.BACKEND_URL,
+      backendUrl: process.env.VUE_APP_BACKEND_URL,
       username: "Player",
     };
   },
