@@ -12,7 +12,7 @@ pub struct AppState {
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
 
-    let database_url = std::env::var("RENDER_POSTGRES_EXTERNAL_DBURL").expect("RENDER_POSTGRES_EXTERNAL_DBURL must be set");
+    let database_url = std::env::var("RENDER_POSTGRES_INTERNAL_DBURL").expect("RENDER_POSTGRES_INTERNAL_DBURL must be set");
     // let database_url = std::env::var("RENDER_POSTGRES_EXTERNAL_DBURL").expect("RENDER_POSTGRES_EXTERNAL_DBURL must be set");
  
 
