@@ -63,9 +63,9 @@ export default {
       score: 0,
       rank: null,
       error: null,
-      backendUrl: "https://typinggame-9sgt.onrender.com",
+      // backendUrl: "https://typinggame-9sgt.onrender.com",
       // backendUrl: process.env.BACKEND_URL,
-      // backendUrl: "http://localhost:8000",
+      backendUrl: "http://localhost:8000",
       username: "Player",
     };
   },
@@ -83,7 +83,7 @@ export default {
     async postScore() {
       try {
         //!@note メッセージの名前はbackend側と同じ表記にしなければならない
-        const response = await axios.post(`https://typinggame-9sgt.onrender.com/users`, {
+        const response = await axios.post(`${this.backendUrl}/users`, {
           username: this.username,
           score: this.score,
           created_at: new Date(),
@@ -95,7 +95,7 @@ export default {
     },
     async fetchScoreRank() {
       try {
-        const response = await axios.get(`https://typinggame-9sgt.onrender.com/score_rank/${this.score}`);
+        const response = await axios.get(`${this.backendUrl}/score_rank/${this.score}`);
         this.rank = response.data;
         this.error = null;
       } catch (error) {
