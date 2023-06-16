@@ -17,7 +17,7 @@ async fn main() -> std::io::Result<()> {
  
 
     let pool = PgPoolOptions::new()
-        .max_connections(10)
+        .max_connections(5)
         .connect(&database_url)
         .await
         .expect("Error building a connection pool");
@@ -40,7 +40,7 @@ async fn main() -> std::io::Result<()> {
             .service(services::get_score_rank)
             .service(services::delete_db)
     })
-    .bind(("localhost", 8000))?
+    .bind("127.0.0.1:8080")?
     .run()
     .await
 }
