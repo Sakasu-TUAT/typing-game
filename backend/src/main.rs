@@ -40,7 +40,7 @@ async fn main() -> std::io::Result<()> {
             .service(services::get_score_rank)
             .service(services::delete_db)
     })
-    .bind(("localhost", 8000))?
+    .bind(format!("0.0.0.0:{}", std::env::var("PORT").unwrap_or_else(|_| "8000".to_string())))?
     .run()
     .await
 }
