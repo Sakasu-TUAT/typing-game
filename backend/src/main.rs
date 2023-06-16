@@ -31,7 +31,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         let cors = services::configure_cors(&frontend_url);
 
-        App::new()
+      App::new()
             .wrap(cors)
             .app_data(Data::new(AppState { db: pool.clone() }))
             .configure(services::init)
