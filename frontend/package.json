@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "type-game",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,7 +10,8 @@
   "dependencies": {
     "axios": "^1.4.0",
     "core-js": "^3.8.3",
-    "vue": "^3.2.26"
+    "vue": "^3.2.26",
+    "vue3-audio-player": "^1.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

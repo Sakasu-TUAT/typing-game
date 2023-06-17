@@ -21,7 +21,8 @@ async fn main() -> std::io::Result<()> {
         .expect("Error building a connection pool");
 
     let frontend_url = std::env::var("FRONTEND_URL").unwrap_or_else(|_| "*".to_string());
-
+    
+    println!("connection check");
     println!("database_url: {}", database_url);
     println!("frontend_url: {}", frontend_url);
 
@@ -36,6 +37,7 @@ async fn main() -> std::io::Result<()> {
             .service(services::insert_data)
             .service(services::get_score_rank)
             .service(services::delete_db)
+            .service(services::get_ranking)
 
     })
    // Render.com (Heroku) automatically assigns "PORT" !!!
