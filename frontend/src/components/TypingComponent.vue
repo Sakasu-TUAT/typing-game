@@ -24,11 +24,6 @@
         <div class="gaugeWrapper mb-20">
           <div :style="styleObject" class="gauge"></div>
         </div>
-        <div>
-        <button @click="playSound">再生</button>
-        <audio ref="audioPlayer" :src="soundFile"></audio>
-      </div>
-
   
         <p>Time: {{ formatTime(elapsedTime) }}</p>
         <div v-if="currentGameState!=gameState.CLEARED" class="mb-20">
@@ -134,7 +129,6 @@ export default {
       backendUrl: "http://localhost:8000",
 
       username: "Player",
-      soundFile: 'audio/typing_sound.mp3'
     };
   },
   computed: {
@@ -268,9 +262,10 @@ export default {
       const randomElement = array.splice(randomIndex, 1)[0];
       return randomElement;
     },
-    playSound() {
-        this.$refs.audioPlayer.play(); // <audio>要素を再生します
-        this.$refs.audioPlayer.currentTime = 0;
+    playTypeSound(soundPath) {
+        const typeSound = new Audio(soundPath);
+        typeSound.play();
+        typeSound.currentTime = 0;
     },
   },
   mounted() {
@@ -289,17 +284,13 @@ export default {
         this.currentQuestion = this.getRandomElementAndRemove(this.currentQuestions);
         this.typeBox = "";
         this.currentQuestionCounts += 1;
-        const correctSound = new Audio('audio/correct_sound.mp3');
-        correctSound.play();
-        correctSound.currentTime = 0;
+        this.playTypeSound('correct_sound.mp3')
       } else {
         const index = e.length - 1;
         if(e[index]!=this.currentQuestion[index]){
-          const incorrectSound = new Audio('audio/incorrect_sound.mp3');
-          incorrectSound.play();
-          incorrectSound.currentTime = 0;
+          this.playTypeSound('incorrect_sound.mp3');
         }
-        this.playSound();
+        this.playTypeSound('typing_sound.mp3');
       }
     },
     currentQuestionCounts(newValue) {
