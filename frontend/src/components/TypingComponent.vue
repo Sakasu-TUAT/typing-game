@@ -9,20 +9,26 @@
       <input type="text" v-model="username" placeholder="Enter your username" class="username-input mb-20">
       <button v-if="currentGameState == gameState.READY" class="startButton mb-20" @click="gameStart">START</button>
 
-        <div v-if="currentGameState != gameState.READY">
+      <div v-if="currentGameState == gameState.PLAYING">
         <div class="question mb-20">{{ currentQuestion }}</div>
-        <div v-if="currentQuestionCounts == totalQuestionNum" class="clear">Clear!</div>
+      </div>
+
+      <div v-if="currentGameState != gameState.READY">
+
+        <div v-if="currentGameState == gameState.CLEARED" class="clear">Clear!</div>
+
         <div class="typeFormWrapper mb-20">
-      <!-- The typed characters will be linked to typeBox -->
-      <input id="typeForm" v-model="typeBox" type="text" class="typeForm" />
+          <!-- The typed characters will be linked to typeBox -->
+          <input id="typeForm" v-model="typeBox" type="text" class="typeForm" />
         </div>
+        
         <div class="gaugeWrapper mb-20">
           <div :style="styleObject" class="gauge"></div>
         </div>
   
         <p>Time: {{ formatTime(elapsedTime) }}</p>
         <div v-if="currentGameState!=gameState.CLEARED" class="mb-20">
-          {{ currentQuestionCounts }}/{{ totalQuestionNum }}
+          {{ currentQuestionCounts }}/{{ querySize }}
         </div>
 
         <div v-if="currentGameState==gameState.CLEARED">
@@ -66,22 +72,33 @@ export default {
   data() {
     return {
       startFlg: "",
+      querySize: 5,
       currentQuestion: "",
       questions: [
-        "a",
-        // "hello",
-        // "apple",
-        // "orange",
-        // "banana",
-        // "grape",
-        // "peach",
-        // "otukaresamadeshita",
-        // "oyasuminasai"
+        "hello",
+        "apple",
+        "orange",
+        "sonnnahimoaru",
+        "banana",
+        "grape",
+        "peach",
+        "otukaresamadeshita",
+        "oyasuminasai",
+        "goodmorning",
+        "goodafternoon",
+        "goodevening",
+        "goodnight",
+        "thankyouforplaying",
+        "seeyouagain",
+        "saihanagerareta",
+        "soragakireidana",
+        "iine!",
+        "sorena-",
+        "korekarahajimaru",
       ],
       currentQuestions: [],
       typeBox: "",
       currentQuestionCounts: 0,
-      totalQuestionNum: 0,
       timer: {
         startTime: null,
         elapsedTime: 0
@@ -106,8 +123,8 @@ export default {
   },
   computed: {
     styleObject() {
-      const width = this.currentQuestionCounts * (100 / this.totalQuestionNum) + "%";
-      const color = this.currentQuestionCounts === this.totalQuestionNum ? "#03a9f4" : "orange";
+      const width = this.currentQuestionCounts * (100 / this.querySize) + "%";
+      const color = this.currentQuestionCounts === this.querySize ? "#03a9f4" : "orange";
       return {
         width: width,
         backgroundColor: color
@@ -199,7 +216,6 @@ export default {
     config() {
       this.currentQuestions = Array.from(this.questions);
       this.currentQuestion = this.currentQuestions[0];
-      this.totalQuestionNum = this.questions.length;
       this.currentQuestionCounts = 0;
       this.updateState(this.gameState.READY);
     },
@@ -231,6 +247,11 @@ export default {
     padZero(number, length = 2) {
       return number.toString().padStart(length, '0');
     },
+    getRandomElementAndRemove(array) {
+      const randomIndex = Math.floor(Math.random() * array.length);
+      const randomElement = array.splice(randomIndex, 1)[0];
+      return randomElement;
+    },
   },
   mounted() {
     this.config();
@@ -245,14 +266,13 @@ export default {
   watch: {
     typeBox(e) {
       if (e === this.currentQuestion) {
-        this.currentQuestions.splice(0, 1);
-        this.currentQuestion = this.currentQuestions[0];
+        this.currentQuestion = this.getRandomElementAndRemove(this.currentQuestions);
         this.typeBox = "";
         this.currentQuestionCounts += 1;
       }
     },
     currentQuestionCounts(newValue) {
-      if (newValue === this.totalQuestionNum) {
+      if (newValue === this.querySize) {
         this.gameClear();
       }
     },
@@ -299,21 +319,21 @@ body{
 }
 
 .username-input {
-  width: 200px; /* 好みに合わせて幅を調整してください */
-  padding: 5px; /* 入力欄の内側の余白を追加します */
-  border: none; /* 枠線を削除します */
-  border-radius: 5px; /* 入力欄の角を丸くします */
-  background-color: darkblue; /* 背景色を設定します */
-  font-size: 24px; /* フォントサイズを調整します */
-  color: #ffffff; /* テキストの色を設定します */
-  outline: none; /* フォーカス時の枠線を削除します */
+  width: 200px; 
+  padding: 5px; 
+  border: none; 
+  border-radius: 5px; 
+  background-color: darkblue; 
+  font-size: 24px; 
+  color: #ffffff; 
+  outline: none;
   text-align: center;
 }
 
 .username-input::placeholder {
-  color: #999; /* プレースホルダーテキストの色を設定します */
-  opacity: 0.7; /* プレースホルダーテキストの透明度を調整します */
-  font-size: 17px; /* フォントサイズを調整します */
+  color: #999; 
+  opacity: 0.7;
+  font-size: 17px; 
 }
 
 .startButton{
