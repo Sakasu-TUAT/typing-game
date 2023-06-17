@@ -24,11 +24,6 @@
         <div class="gaugeWrapper mb-20">
           <div :style="styleObject" class="gauge"></div>
         </div>
-        <div>
-        <button @click="playSound">再生</button>
-        <audio ref="audioPlayer" :src="soundFile"></audio>
-      </div>
-
   
         <p>Time: {{ formatTime(elapsedTime) }}</p>
         <div v-if="currentGameState!=gameState.CLEARED" class="mb-20">
