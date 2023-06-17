@@ -5,7 +5,6 @@
         <div class="marker"></div>
       </div>
       <!-- Assigning multiple classes to a button -->
-      <!-- <input v-if="currentGameState == gameState.READY" id="typeForm" v-model="typeBox" type="text" class="typeForm" /> -->
       <input type="text" v-model="username" placeholder="Enter your username" class="username-input mb-20">
       <button v-if="currentGameState == gameState.READY" class="startButton mb-20" @click="gameStart">START</button>
 
@@ -19,12 +18,17 @@
 
         <div class="typeFormWrapper mb-20">
           <!-- The typed characters will be linked to typeBox -->
-          <input id="typeForm" v-model="typeBox" type="text" class="typeForm" />
+          <input id="typeForm" v-model="typeBox" type="text" class="typeForm"/>
         </div>
         
         <div class="gaugeWrapper mb-20">
           <div :style="styleObject" class="gauge"></div>
         </div>
+        <div>
+        <button @click="playSound">再生</button>
+        <audio ref="audioPlayer" :src="soundFile"></audio>
+      </div>
+
   
         <p>Time: {{ formatTime(elapsedTime) }}</p>
         <div v-if="currentGameState!=gameState.CLEARED" class="mb-20">
@@ -68,6 +72,7 @@
   <script>
   import axios from "axios";
 
+
 export default {
   data() {
     return {
@@ -82,7 +87,10 @@ export default {
         "banana",
         "grape",
         "peach",
+        "watermelon",
+        "robocooon",
         "otukaresamadeshita",
+        "soreha,kusa",
         "oyasuminasai",
         "goodmorning",
         "goodafternoon",
@@ -90,7 +98,7 @@ export default {
         "goodnight",
         "thankyouforplaying",
         "seeyouagain",
-        "saihanagerareta",
+        "saiha,nagerareta",
         "soragakireidana",
         "iine!",
         "sorena-",
@@ -116,9 +124,11 @@ export default {
       isRankingShown: false,
       showRankingNum: 10,
       rankings: [],
-      backendUrl: "http://localhost:8000",
       // backendUrl: process.env.VUE_APP_BACKEND_URL,
+      backendUrl: "http://localhost:8000",
+
       username: "Player",
+      soundFile: 'audio/typing_sound.mp3'
     };
   },
   computed: {
@@ -252,6 +262,10 @@ export default {
       const randomElement = array.splice(randomIndex, 1)[0];
       return randomElement;
     },
+    playSound() {
+        this.$refs.audioPlayer.play(); // <audio>要素を再生します
+        this.$refs.audioPlayer.currentTime = 0;
+    },
   },
   mounted() {
     this.config();
@@ -269,6 +283,17 @@ export default {
         this.currentQuestion = this.getRandomElementAndRemove(this.currentQuestions);
         this.typeBox = "";
         this.currentQuestionCounts += 1;
+        const correctSound = new Audio('audio/correct_sound.mp3');
+        correctSound.play();
+        correctSound.currentTime = 0;
+      } else {
+        const index = e.length - 1;
+        if(e[index]!=this.currentQuestion[index]){
+          const incorrectSound = new Audio('audio/incorrect_sound.mp3');
+          incorrectSound.play();
+          incorrectSound.currentTime = 0;
+        }
+        this.playSound();
       }
     },
     currentQuestionCounts(newValue) {
