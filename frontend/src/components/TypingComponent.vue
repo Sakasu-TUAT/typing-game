@@ -125,9 +125,8 @@ export default {
       isRankingShown: false,
       showRankingNum: 10,
       rankings: [],
-      // backendUrl: process.env.VUE_APP_BACKEND_URL,
-      backendUrl: "http://localhost:8000",
-
+      backendUrl: process.env.VUE_APP_BACKEND_URL,
+    
       username: "Player",
     };
   },

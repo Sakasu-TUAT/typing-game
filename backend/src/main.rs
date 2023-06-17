@@ -12,8 +12,7 @@ pub struct AppState {
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
 
-    // let database_url = std::env::var("RENDER_POSTGRES_INTERNAL_DBURL").expect("RENDER_POSTGRES_INTERNAL_DBURL must be set"); 
-    let database_url = std::env::var("LOCAL_DB_URL").expect("LOCAL_DB_URL must be set"); 
+    let database_url = std::env::var("RENDER_POSTGRES_INTERNAL_DBURL").expect("RENDER_POSTGRES_INTERNAL_DBURL must be set"); 
 
     let pool = PgPoolOptions::new()
         .max_connections(5)
@@ -21,7 +20,7 @@ async fn main() -> std::io::Result<()> {
         .await
         .expect("Error building a connection pool");
 
-    let frontend_url = std::env::var("LOCAL_FRONTEND_URL").unwrap_or_else(|_| "*".to_string());
+    let frontend_url = std::env::var("FRONTEND_URL").unwrap_or_else(|_| "*".to_string());
     
     println!("connection check");
     println!("database_url: {}", database_url);
