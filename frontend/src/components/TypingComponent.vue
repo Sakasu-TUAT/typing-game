@@ -18,11 +18,28 @@
         </div>
   
         <p>Time: {{ formatTime(elapsedTime) }}</p>
-        <div class="mb-20">{{ currentQuestionCounts }}/{{ totalQuestionNum }}</div>
+        <div v-if="currentGameState!=gameState.CLEARED" class="mb-20">
+          {{ currentQuestionCounts }}/{{ totalQuestionNum }}
+        </div>
+
         <div v-if="currentGameState==gameState.CLEARED">
           <p> {{username}}'s rank is {{ rank }} th</p>
+          <button class="rankButton mb-20" @click="handleRankingButton">RANKING</button>
+          <div v-if="isRankingShown" class="ranking-container" ref="rankingContainer">
+            <transition-group name="ranking-item" tag="div">
+              <div v-for="(ranking, index) in rankings" :key="index" class="ranking-item">
+                {{ "Top " + (index + 1) + " - " + ranking + "s"}}
+              </div>
+            </transition-group>
+            <div class="yourScore" ref="yourScore">
+              {{ "Top " + (this.rank) + " - " + this.username + " : " + this.score + " s"}}
+            </div>
+          </div>
         </div>
-        <button class="resetButton mb-20" @click="gameReset">RESET</button>
+
+        <button class="resetButton mb-20 " @click="gameReset">RESET</button>   
+        
+          
       </div>
     </div>
   </template>
@@ -36,14 +53,15 @@ export default {
       startFlg: "",
       currentQuestion: "",
       questions: [
-        "hello",
-        "apple",
-        "orange",
-        "banana",
-        "grape",
-        "peach",
-        "otukaresamadeshita",
-        "oyasuminasai"
+        "a",
+        // "hello",
+        // "apple",
+        // "orange",
+        // "banana",
+        // "grape",
+        // "peach",
+        // "otukaresamadeshita",
+        // "oyasuminasai"
       ],
       currentQuestions: [],
       typeBox: "",
@@ -62,7 +80,12 @@ export default {
       score: 0,
       rank: null,
       error: null,
-      backendUrl: process.env.VUE_APP_BACKEND_URL,
+
+      isRankingShown: false,
+      showRankingNum: 10,
+      rankings: [],
+      backendUrl: "http://localhost:8000",
+      // backendUrl: process.env.VUE_APP_BACKEND_URL,
       username: "Player",
     };
   },
@@ -104,6 +127,42 @@ export default {
       }
       console.log("rank is " + this.rank);
     },
+    scrollRankingContainer() {
+      const container = this.$refs.rankingContainer;
+      container.scrollTop = container.scrollHeight;
+    },
+    scrollYourScore() {
+      if (this.isRankingShown) {
+        this.$nextTick(() => {
+          this.scrollRankingContainer();
+          setTimeout(() => {
+            const yourScore = this.$refs.yourScore;
+            yourScore.scrollIntoView({ behavior: "smooth", block: "end" });
+          },100);
+        });
+      }
+    },
+    handleRankingButton(){
+      this.featchRanking();
+      this.toggleRanking();
+      this.scrollYourScore();
+    },
+    async featchRanking() {
+      console.log("[Fetch URL]: " + `${this.backendUrl}/ranking/${this.showRankingNum}`);
+      try {
+        const response = await axios.get(`${this.backendUrl}/ranking/${this.showRankingNum}`);
+        this.rankings = response.data.map(player => player.username + ": " + player.score);
+        this.error = null;
+      } catch (error) {
+        this.rankings = null;
+        this.error = 'Failed to fetch score rank';
+        console.error(error);
+      }
+      console.log("rankings are " + this.rankings);
+    },
+    toggleRanking() {
+      this.isRankingShown = !this.isRankingShown;
+    },
     updateState(state) {
       this.currentGameState = state;
     },
@@ -130,6 +189,7 @@ export default {
     },
     gameReset() {
       this.config();
+      this.toggleRanking();
       clearInterval(this.timer);
     },
     startTimer() {
@@ -158,6 +218,13 @@ export default {
   },
   mounted() {
     this.config();
+    this.$nextTick(() => {
+      if (this.isRankingShown) {
+        this.scrollRankingContainer();
+        this.scrollYourScore();
+        setInterval(this.scrollRankingContainer, 1000);
+      }
+    });
   },
   watch: {
     typeBox(e) {
@@ -172,7 +239,7 @@ export default {
       if (newValue === this.totalQuestionNum) {
         this.gameClear();
       }
-    }
+    },
   },
 };
 </script>
@@ -270,4 +337,56 @@ body{
     /* Changes over 0.3 seconds. */
     transition: all .3s ease; 
 }
+
+.rankButton{
+    background-color: #eba21b;
+    color: #fff;
+    padding: 4px 60px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+.rankButton:hover{
+    opacity: 0.7;
+    background-color: #eba21b;
+}
+
+.ranking-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+@keyframes ranking-item {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ranking-item {
+  font-size: 24px;
+  animation: ranking-item 1.0s ease-in-out;
+}
+
+.yourScore {
+  font-size: 24px;
+  font-weight: bold;
+  color: #FFFFFF;
+  display: inline-block; /* テキストのある部分のみを含むインラインブロック要素にする */
+  background-color: rgb(233, 161, 7);
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 0 auto; /* 水平方向に中央に配置 */
+  margin-bottom: 50px;
+  border-radius: 5px;
+  animation: ranking-item 1.5s ease-in-out;
+}
+
 </style>

@@ -9,11 +9,17 @@ use serde::{Deserialize, Serialize};
 use sqlx::{self, FromRow};
 use crate::AppState;
 
-#[derive(Serialize, Deserialize, FromRow)]
+#[derive(Serialize, Deserialize, FromRow, Debug)]
 pub struct Player {
     username: String,
     score: f64,
     created_at: String,
+}
+
+#[derive(Serialize, Deserialize, FromRow, Debug)]
+pub struct Ranking {
+    username: String,
+    score: f64,
 }
 
 #[post("/score")]
@@ -77,6 +83,31 @@ pub async fn get_score_rank(state: Data<AppState>, path: Path<f64>) -> impl Resp
         None => HttpResponse::NotFound().body("Score not found"),
     }
 }
+
+#[get("/ranking/{rank_num}")]
+pub async fn get_ranking(state: Data<AppState>, path: Path<i32>) -> impl Responder {
+    let rank_num: i32 = path.into_inner();
+    match sqlx::query_as::<_, Ranking>(
+        "SELECT username, score FROM users ORDER BY score ASC LIMIT $1"
+    )
+    .bind(rank_num)
+    .fetch_all(&state.db)
+    .await
+    {
+        Ok(users) => {
+            println!("Successfully got ranking");
+            println!("Ranking: {:?}", users);
+            HttpResponse::Ok().json(users)
+        }
+        Err(e) => {
+            eprintln!("Failed to get ranking: {}", e);
+            HttpResponse::InternalServerError().json("Failed to get ranking")
+        }
+    }
+}
+
+
+
 
 #[post("/create")]
 pub async fn create_db(state: Data<AppState>) -> impl Responder {
