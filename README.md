@@ -7,6 +7,7 @@ This is also an example of **a full-stack app** that uses **JavaScript (Vue3) + 
 <p align="center">
   <img src="https://github.com/Sakasu-TUAT/typing-game/assets/113872797/7b0ab8d8-8cce-4c79-8ec4-c2cfc87ed59a" width="350" height="auto">
 </p>
+
 ---
 
 
