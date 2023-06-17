@@ -5,8 +5,11 @@
         <div class="marker"></div>
       </div>
       <!-- Assigning multiple classes to a button -->
+      <!-- <input v-if="currentGameState == gameState.READY" id="typeForm" v-model="typeBox" type="text" class="typeForm" /> -->
+      <input type="text" v-model="username" placeholder="Enter your username" class="username-input mb-20">
       <button v-if="currentGameState == gameState.READY" class="startButton mb-20" @click="gameStart">START</button>
-      <div v-if="currentGameState != gameState.READY">
+
+        <div v-if="currentGameState != gameState.READY">
         <div class="question mb-20">{{ currentQuestion }}</div>
         <div v-if="currentQuestionCounts == totalQuestionNum" class="clear">Clear!</div>
         <div class="typeFormWrapper mb-20">
@@ -23,16 +26,28 @@
         </div>
 
         <div v-if="currentGameState==gameState.CLEARED">
-          <p> {{username}}'s rank is {{ rank }} th</p>
           <button class="rankButton mb-20" @click="handleRankingButton">RANKING</button>
           <div v-if="isRankingShown" class="ranking-container" ref="rankingContainer">
             <transition-group name="ranking-item" tag="div">
-              <div v-for="(ranking, index) in rankings" :key="index" class="ranking-item">
-                {{ "Top " + (index + 1) + " - " + ranking + "s"}}
-              </div>
+              <table class="ranking-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(ranking, index) in rankings" :key="index" class="ranking-item">
+                  <td>{{ index + 1 }}</td>
+                  <td>{{ ranking.split(': ')[0] }}</td>
+                  <td>{{ ranking.split(': ')[1] }}</td>
+                </tr>
+              </tbody>
+            </table>
             </transition-group>
             <div class="yourScore" ref="yourScore">
-              {{ "Top " + (this.rank) + " - " + this.username + " : " + this.score + " s"}}
+              {{ "Rank  " + (this.rank) + "  -  " + this.username + " : " + this.score + " s"}}
             </div>
           </div>
         </div>
@@ -174,6 +189,7 @@ export default {
       this.updateState(this.gameState.PLAYING);
     },
     gameClear() {
+      if(this.username=="") this.username = "Player";
       this.updateState(this.gameState.CLEARED);
       this.score = this.elapsedTime;
       this.postScore();
@@ -282,6 +298,24 @@ body{
     z-index: -1;
 }
 
+.username-input {
+  width: 200px; /* 好みに合わせて幅を調整してください */
+  padding: 5px; /* 入力欄の内側の余白を追加します */
+  border: none; /* 枠線を削除します */
+  border-radius: 5px; /* 入力欄の角を丸くします */
+  background-color: darkblue; /* 背景色を設定します */
+  font-size: 24px; /* フォントサイズを調整します */
+  color: #ffffff; /* テキストの色を設定します */
+  outline: none; /* フォーカス時の枠線を削除します */
+  text-align: center;
+}
+
+.username-input::placeholder {
+  color: #999; /* プレースホルダーテキストの色を設定します */
+  opacity: 0.7; /* プレースホルダーテキストの透明度を調整します */
+  font-size: 17px; /* フォントサイズを調整します */
+}
+
 .startButton{
     background-color: #333;
     color: #fff;
@@ -370,10 +404,18 @@ body{
   }
 }
 
-.ranking-item {
-  font-size: 24px;
-  animation: ranking-item 1.0s ease-in-out;
+.ranking-item td {
+  padding: 5px;
 }
+
+.ranking-item {
+  /* align-items: center; */
+  margin-bottom: 0px;
+  font-size: 20px;
+}
+
+
+
 
 .yourScore {
   font-size: 24px;
